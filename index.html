@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EQHL v2 -- Final Dashboards</title>
+<style>
+body{background:#010409;color:#c9d1d9;font-family:-apple-system,sans-serif;margin:0;padding:24px}
+h1{font-size:20px;margin:0 0 4px}
+h2{font-size:13px;color:#8b949e;text-transform:uppercase;letter-spacing:.06em;margin:24px 0 10px}
+a{display:block;background:#0d1117;border:1px solid #21262d;border-radius:10px;
+  padding:16px 18px;margin-bottom:12px;color:#c9d1d9;text-decoration:none;font-size:16px}
+a:active{background:#161b22}
+.sub{color:#8b949e;font-size:12px;margin-top:4px}
+</style>
+</head>
+<body>
+<h1>EQHL v2 -- Trading Dashboards</h1>
+
+<h2>Per-Pair Locked Configs</h2>
+<a href="1_GBPUSD.html">GBPUSD<div class="sub">RR=1.0, struct&le;20p, 15min news filter</div></a>
+<a href="2_EURUSD_personal.html">EURUSD (Personal)<div class="sub">RR=1.0, struct&le;20p, unfiltered</div></a>
+<a href="3_EURUSD_propfirm.html">EURUSD (Prop Firm)<div class="sub">Trend-Volatile, London+NY only</div></a>
+<a href="4_GBPJPY.html">GBPJPY<div class="sub">RR=0.75, struct&le;50p, unfiltered</div></a>
+<a href="5_XAUUSD.html">XAUUSD<div class="sub">RR=0.75, struct&le;30p, exclude Trend-Volatile</div></a>
+
+<h2>Portfolio (All 4 Pairs Combined)</h2>
+<a href="6_Portfolio_All.html">Portfolio -- Full Baseline<div class="sub">All 4 pairs pooled, all sessions</div></a>
+<a href="7_Portfolio_SplitSchedule.html">Portfolio -- Split Schedule<div class="sub">Filtered to 8-11AM + 3:30-9:30PM IST</div></a>
+
+</body>
+</html>
