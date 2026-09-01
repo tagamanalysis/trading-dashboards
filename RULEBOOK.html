@@ -305,6 +305,21 @@
   <p class="note">RR and structure-size tuning did NOT fix XAUUSD's drawdown (stayed ~31% regardless). The real driver was day-type — Trend-Volatile carried almost all of it (DD −29.0% in that bucket alone vs −14.5% in Range-Calm). Excluding it nearly halved overall DD.</p>
 </div>
 
+<div class="pair-card">
+  <h3>6. BTCUSD (Bitcoin)</h3>
+  <table>
+    <tr><th>Risk:Reward</th><td>0.75</td></tr>
+    <tr><th>Structure-size max</th><td>80 basis points (~0.8% of current price, dynamic -- BTC pip is defined as PIP_RATIO x current price, not a fixed dollar amount, since price ranged $15k-$126k over the test window)</td></tr>
+    <tr><th>Session filter</th><td>None</td></tr>
+    <tr><th>Day-type filter</th><td>None (all 4 buckets solidly positive, no bad regime to cut)</td></tr>
+    <tr><th>Day-of-week filter</th><td>EXCLUDE Saturday</td></tr>
+    <tr><th>Timeframe</th><td>3-minute (5-minute tested and rejected -- weaker Sharpe, unstable IS/OOS)</td></tr>
+  </table>
+  <div class="result-line">n=5275 &middot; WR=63.92% &middot; PF=1.202 &middot; exp=+0.0758R &middot; Sharpe=6.54 &middot; total=+399.7R &middot; DD=&minus;18.6% &middot; ~2.9 trades/day</div>
+  <p class="note">Highest Sharpe of any pair in the whole project. Structure-size ceiling was the critical fix -- default 20bps gave Sharpe 2.06, DD -35.7%; widening to 80bps (same lesson as GBPJPY) gave Sharpe 5.85 before the day filter. Saturday is the one clean, decisive exclusion: lowest volatility day of the week, Sharpe -0.13 alone, worst DD of any day (-30.4%). Excluding it improved every metric simultaneously (Sharpe 5.85&rarr;6.54, DD unchanged, 82% trade retention) -- a genuine free win, not a tradeoff. RR=1.0 was tested at the same struct ceiling and lost on Sharpe (5.57) and DD (-25.6%) despite similar expectancy -- RR=0.75 confirmed correct. IS/OOS holds up well (Sharpe 4.03 IS &rarr; 5.02 OOS, expectancy improves out-of-sample).</p>
+  <p class="note">Market profile: BTCUSD is structurally very different from any forex pair -- ~42 raw sweeps/day, 99.5% produce a gap, 89.8% of those invert. Almost none of forex's natural upstream filtering exists; CHoCH + the day-of-week filter are doing most of the real selectivity. 2021-2025 covers a +57.6% bull year, a -65.3% crash, a +154.5% recovery, and more -- the edge held up across genuinely different market regimes.</p>
+</div>
+
 <h2>Summary Table</h2>
 <table class="summary-table">
   <tr><th>Pair</th><th>RR</th><th>Struct Max</th><th>Session</th><th>Day-Type</th><th>News</th><th>n</th><th>Sharpe</th><th>DD</th></tr>
