@@ -1,0 +1,341 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EQHL v2 — Rulebook</title>
+<style>
+  :root {
+    --bg: #010409;
+    --panel: #0d1117;
+    --border: #21262d;
+    --ink: #c9d1d9;
+    --ink-dim: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --red: #f85149;
+    --orange: #d29922;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 24px 16px 64px;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  h1 {
+    font-size: 24px;
+    margin: 0 0 4px;
+  }
+  .subtitle { color: var(--ink-dim); font-size: 14px; margin-bottom: 28px; }
+  h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--ink-dim);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin: 40px 0 16px;
+  }
+  h3 {
+    font-size: 17px;
+    color: var(--accent);
+    margin: 22px 0 4px;
+  }
+  .step {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .step .num {
+    display: inline-block;
+    background: var(--accent);
+    color: #000;
+    font-weight: 700;
+    font-size: 12px;
+    border-radius: 5px;
+    padding: 2px 7px;
+    margin-right: 8px;
+  }
+  .step-title { font-weight: 600; font-size: 15px; }
+  .step p { margin: 6px 0 0; color: var(--ink); font-size: 14px; }
+  code {
+    background: #161b22;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 13px;
+    color: #ffa657;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 4px;
+    font-size: 13px;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 7px 10px;
+    text-align: left;
+  }
+  th { background: #161b22; color: var(--ink-dim); font-weight: 600; }
+  tr:nth-child(even) td { background: #0a0d12; }
+  .pair-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+  }
+  .pair-card h3 { margin-top: 0; }
+  .result-line {
+    background: #0a0d12;
+    border-left: 3px solid var(--green);
+    padding: 8px 12px;
+    margin: 10px 0;
+    font-size: 13px;
+    font-family: ui-monospace, monospace;
+    color: var(--ink);
+    border-radius: 4px;
+  }
+  .note {
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .finding-box {
+    background: linear-gradient(135deg, rgba(88,166,255,0.08), rgba(88,166,255,0.02));
+    border: 1px solid #1f6feb44;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 16px 0;
+  }
+  .rejected {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    font-size: 13.5px;
+  }
+  .rejected b { color: var(--red); }
+  .summary-table th:first-child, .summary-table td:first-child { font-weight: 600; color: var(--accent); }
+  .footer-note {
+    color: var(--ink-dim);
+    font-size: 12px;
+    text-align: center;
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  a.back {
+    display: inline-block;
+    color: var(--ink-dim);
+    text-decoration: none;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  a.back:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">&larr; Back to dashboards</a>
+<h1>EQHL v2 — Complete Trading Rulebook</h1>
+<div class="subtitle">All 5 locked, fully backtested configurations · 2021–2025</div>
+
+<h2>Core Mechanism (identical across all pairs)</h2>
+<p style="color:var(--ink-dim); font-size:14px;">Setup name: <b style="color:var(--ink)">EQH/EQL Liquidity Sweep → iFVG → CHoCH</b></p>
+
+<div class="step">
+  <span class="step-title"><span class="num">1</span>Swing Detection</span>
+  <p>A confirmed swing high/low uses a 2-bar-left, 2-bar-right pivot (candle must be the highest/lowest of the 5-candle window centered on it). Confirmed 2 bars after formation.</p>
+</div>
+
+<div class="step">
+  <span class="step-title"><span class="num">2</span>EQH/EQL Pool Formation</span>
+  <p>Swing highs (or lows) within a price tolerance cluster into a "liquidity pool." Matching is <b>pure tolerance-based</b> — no slope or directional restriction (tested and rejected, see below). Pool level = running weighted average of all touches. Active once minimum touch count reached.</p>
+  <p>Tolerance: <code>4 pips</code> &nbsp; Min touches: <code>2</code> &nbsp; Pool lookback: <code>300 bars</code></p>
+</div>
+
+<div class="step">
+  <span class="step-title"><span class="num">3</span>Sweep Detection</span>
+  <p>A pool is "swept" when a candle's <b>wick</b> exceeds the pool level but the candle's <b>close</b> comes back inside it. Sweeping an EQH → bearish/short bias. Sweeping an EQL → bullish/long bias.</p>
+</div>
+
+<div class="step">
+  <span class="step-title"><span class="num">4</span>FVG Formation (local to each sweep)</span>
+  <p>After a sweep, scan for a 3-candle Fair Value Gap forming <b>opposite</b> the sweep bias, within a 20-bar window. Bullish FVG: <code>low[now] &gt; high[2 bars ago]</code>. Bearish FVG: <code>high[now] &lt; low[2 bars ago]</code>. No minimum gap size in the core validated model.</p>
+</div>
+
+<div class="step">
+  <span class="step-title"><span class="num">5</span>FVG State Machine</span>
+  <p>0 = Formed &nbsp;→&nbsp; 1 = Retraced (price wicks back in) &nbsp;→&nbsp; 2 = Inverted/Armed (price closes beyond far boundary). Must invert within 30 bars of forming, then stays armed for another 30 bars.</p>
+</div>
+
+<div class="step">
+  <span class="step-title"><span class="num">6</span>CHoCH — local / sweep-relative</span>
+  <p>Only swing pivots forming <b>after</b> the sweep bar are tracked (reset per sweep — no dependency on any prior global trend state). CHoCH confirms the moment price closes beyond the most recent such pivot, opposite the sweep direction.</p>
+</div>
+
+<div class="step">
+  <span class="step-title"><span class="num">7</span>Entry</span>
+  <p>The CHoCH confirmation candle <b>is</b> the entry, provided a state-2 (armed) FVG of the correct direction already exists from this same sweep.</p>
+</div>
+
+<div class="step">
+  <span class="step-title"><span class="num">8</span>Stop-Loss</span>
+  <p>Wick extreme of the last 10 bars, plus a 0.2 pip buffer.</p>
+</div>
+
+<div class="step">
+  <span class="step-title"><span class="num">9</span>Structure-Size Filter</span>
+  <p>Stop distance must fall between 1 pip minimum and a per-instrument maximum (see table below). Trades outside this range are skipped.</p>
+</div>
+
+<div class="step">
+  <span class="step-title"><span class="num">10</span>Take-Profit</span>
+  <p>Fixed R-multiple from entry, per-instrument RR value. One trade at a time — no new entries while a position is open.</p>
+</div>
+
+<table>
+  <tr><th>Fixed Parameter</th><th>Value</th></tr>
+  <tr><td>Timeframe</td><td>3-minute candles</td></tr>
+  <tr><td>EQ tolerance</td><td>4 pips</td></tr>
+  <tr><td>Min touches to activate pool</td><td>2</td></tr>
+  <tr><td>Pool lookback</td><td>300 bars</td></tr>
+  <tr><td>Sweep window</td><td>20 bars</td></tr>
+  <tr><td>FVG max age before inversion</td><td>30 bars</td></tr>
+  <tr><td>Armed window after inversion</td><td>30 bars</td></tr>
+  <tr><td>SL lookback</td><td>10 bars</td></tr>
+  <tr><td>SL buffer</td><td>0.2 pips</td></tr>
+  <tr><td>Structure-size minimum</td><td>1 pip</td></tr>
+</table>
+
+<h2>Per-Pair Locked Configurations</h2>
+
+<div class="pair-card">
+  <h3>1. GBPUSD</h3>
+  <table>
+    <tr><th>Risk:Reward</th><td>1.0</td></tr>
+    <tr><th>Structure-size max</th><td>20 pips</td></tr>
+    <tr><th>Session filter</th><td>None (all sessions)</td></tr>
+    <tr><th>Day-type filter</th><td>None</td></tr>
+    <tr><th>News filter</th><td>15-min avoidance around GBP/USD high-impact news</td></tr>
+  </table>
+  <div class="result-line">n=3980 · WR=55.80% · PF=1.227 · exp=+0.1019R · Sharpe=6.47 · total=+405.6R · DD=−20.1%</div>
+  <p class="note">OOS holds up (Sharpe 5.13 IS → 3.64 OOS). London best session, NY weakest (still positive).</p>
+</div>
+
+<div class="pair-card">
+  <h3>2. EURUSD (Personal Capital)</h3>
+  <table>
+    <tr><th>Risk:Reward</th><td>1.0</td></tr>
+    <tr><th>Structure-size max</th><td>20 pips</td></tr>
+    <tr><th>Session filter</th><td>None (all sessions)</td></tr>
+    <tr><th>Day-type filter</th><td>None</td></tr>
+    <tr><th>News filter</th><td>15-min avoidance</td></tr>
+  </table>
+  <div class="result-line">n=4460 · WR=53.52% · PF=1.112 · exp=+0.0528R · Sharpe=3.54 · total=+235.6R · DD=−24.2%</div>
+  <p class="note">Chosen deliberately unfiltered for personal capital — higher frequency (~2.2 trades/day), DD tolerable when it's your own money and the goal is growth.</p>
+</div>
+
+<div class="pair-card">
+  <h3>3. EURUSD (Prop Firm — "Filter F")</h3>
+  <table>
+    <tr><th>Risk:Reward</th><td>1.0</td></tr>
+    <tr><th>Structure-size max</th><td>20 pips</td></tr>
+    <tr><th>Session filter</th><td>London (08:00–16:00 UTC) + NY (16:00–24:00 UTC) only</td></tr>
+    <tr><th>Day-type filter</th><td>Require "Trend-Volatile"</td></tr>
+    <tr><th>News filter</th><td>None (tested flat/neutral for EURUSD)</td></tr>
+  </table>
+  <div class="result-line">n=891 · WR=58.1% · PF=1.348 · exp=+0.1481R · Sharpe=4.48 · DD=−9.8%</div>
+  <p class="note">Chosen for prop-firm rules where DD control matters more than frequency. Roughly halves DD vs unfiltered at the cost of ~80% fewer trades.</p>
+</div>
+
+<div class="finding-box">
+  <h3 style="margin-top:0">Day-Type Classification (used for EURUSD Prop Firm and XAUUSD only)</h3>
+  <p style="font-size:13.5px;">Per session (Asian 00–08 UTC, London 08–16 UTC, NY 16–24 UTC), compute:</p>
+  <p style="font-size:13.5px;">
+    <b>Efficiency Ratio (ER)</b> = |close−open| / Σ|high−low| per bar<br>
+    <b>Range</b> = session high − session low
+  </p>
+  <p style="font-size:13.5px;">Compare both against the <b>trailing median of the last 20 occurrences of that same session type</b> (Asian vs Asian, London vs London, NY vs NY — never mixed). Classified using the <b>prior</b> completed session's realized values — no lookahead.</p>
+  <table>
+    <tr><th>Label</th><th>Condition</th></tr>
+    <tr><td>Trend-Volatile</td><td>ER ≥ median AND Range ≥ median</td></tr>
+    <tr><td>Trend-Calm</td><td>ER ≥ median AND Range &lt; median</td></tr>
+    <tr><td>Range-Volatile (Choppy)</td><td>ER &lt; median AND Range ≥ median</td></tr>
+    <tr><td>Range-Calm (Dead)</td><td>ER &lt; median AND Range &lt; median</td></tr>
+  </table>
+  <p class="note">For EURUSD, Trend-Volatile was the standout bucket everywhere — London × Trend-Volatile = +0.174R, Sharpe 4.00, the strongest single cell in the whole dataset.</p>
+</div>
+
+<div class="pair-card">
+  <h3>4. GBPJPY</h3>
+  <table>
+    <tr><th>Risk:Reward</th><td>0.75</td></tr>
+    <tr><th>Structure-size max</th><td>50 pips</td></tr>
+    <tr><th>Session filter</th><td>None — every filter tested was worse than unfiltered</td></tr>
+    <tr><th>Day-type filter</th><td>None — no bad bucket exists to filter out</td></tr>
+    <tr><th>News filter</th><td>None</td></tr>
+  </table>
+  <div class="result-line">n=4671 · WR=61.10% · PF=1.157 · exp=+0.0614R · Sharpe=4.92 · total=+286.8R · DD=−18.0% · ~2.4 trades/day</div>
+  <p class="note">Needed a genuinely wider structure ceiling than GBPUSD/EURUSD (50p vs 20p), confirmed by extending the grid until Sharpe plateaued. Day-type behavior is <b>opposite</b> of EURUSD: Range-Calm/Dead was the best bucket, Trend-Volatile the weakest (still positive).</p>
+</div>
+
+<div class="pair-card">
+  <h3>5. XAUUSD (Gold)</h3>
+  <table>
+    <tr><th>Risk:Reward</th><td>0.75</td></tr>
+    <tr><th>Structure-size max</th><td>30 pips (volatility-scaled unit, 0.4368 in absolute price terms)</td></tr>
+    <tr><th>Session filter</th><td>None (all sessions)</td></tr>
+    <tr><th>Day-type filter</th><td>EXCLUDE "Trend-Volatile"</td></tr>
+    <tr><th>News filter</th><td>None</td></tr>
+  </table>
+  <div class="result-line">n=2582 · WR=62.4% · PF=1.196 · exp=+0.0748R · Sharpe=4.49 · total=+193.2R · DD=−18.2% · ~1.3 trades/day</div>
+  <p class="note">RR and structure-size tuning did NOT fix XAUUSD's drawdown (stayed ~31% regardless). The real driver was day-type — Trend-Volatile carried almost all of it (DD −29.0% in that bucket alone vs −14.5% in Range-Calm). Excluding it nearly halved overall DD.</p>
+</div>
+
+<h2>Summary Table</h2>
+<table class="summary-table">
+  <tr><th>Pair</th><th>RR</th><th>Struct Max</th><th>Session</th><th>Day-Type</th><th>News</th><th>n</th><th>Sharpe</th><th>DD</th></tr>
+  <tr><td>GBPUSD</td><td>1.0</td><td>20p</td><td>None</td><td>None</td><td>15-min</td><td>3980</td><td>6.47</td><td>−20.1%</td></tr>
+  <tr><td>EURUSD (Personal)</td><td>1.0</td><td>20p</td><td>None</td><td>None</td><td>15-min</td><td>4460</td><td>3.54</td><td>−24.2%</td></tr>
+  <tr><td>EURUSD (Prop Firm)</td><td>1.0</td><td>20p</td><td>London+NY</td><td>Req. Trend-Vol</td><td>None</td><td>891</td><td>4.48</td><td>−9.8%</td></tr>
+  <tr><td>GBPJPY</td><td>0.75</td><td>50p</td><td>None</td><td>None</td><td>None</td><td>4671</td><td>4.92</td><td>−18.0%</td></tr>
+  <tr><td>XAUUSD</td><td>0.75</td><td>30p</td><td>None</td><td>Excl. Trend-Vol</td><td>None</td><td>2582</td><td>4.49</td><td>−18.2%</td></tr>
+</table>
+
+<div class="finding-box">
+  <h3 style="margin-top:0">Key Cross-Pair Finding</h3>
+  <p style="font-size:14px;"><b>EURUSD wants volatility. GBPJPY and XAUUSD want calm.</b> Trend-Volatile is EURUSD's best bucket everywhere, but is GBPJPY's weakest bucket and XAUUSD's worst-drawdown bucket. This is a genuine, opposite-direction, replicated finding — not noise. No universal day-type rule applies across all pairs; each was tuned individually.</p>
+</div>
+
+<h2>Rejected / Tested-and-Discarded Ideas</h2>
+<p class="note" style="margin-bottom:14px;">Kept here so they are never accidentally re-tried.</p>
+
+<div class="rejected"><b>Asymmetric slope rule</b> on EQH/EQL pool matching (EQH flat/≤1p up or any down, EQL mirrored) — looked visually sensible, cut GBPUSD's Sharpe by ~43% and expectancy by ~42% in a real backtest. <b>Do not use.</b></div>
+<div class="rejected"><b>Minimum FVG gap size (0.3p)</b> — mild net positive in isolation (Sharpe 6.47→6.69 on GBPUSD) but not part of the core locked model.</div>
+<div class="rejected"><b>CHoCH previous-close-exclusion rule</b> — mild net negative in isolation (Sharpe 6.47→6.03). Not part of core model.</div>
+<div class="rejected"><b>Prior-same-session-direction filter</b> — real, replicated per-bucket pattern across all 4 pairs, but LOST Sharpe when actually applied (cuts ~50% of trades for worse Sharpe on every pair).</div>
+<div class="rejected"><b>PDH/PDL location filter</b> — looked strong on GBPUSD alone, did not replicate (XAUUSD contradicted it). Rejected.</div>
+<div class="rejected"><b>Calendar-month seasonality</b> — no month clears significance, EXCEPT October (real, cross-pair-replicated edge, all 4 pairs agree Oct &gt; Dec). Documented, not yet acted on.</div>
+<div class="rejected"><b>iFVG size quality filter</b> — strongest survivor of the full Families A–L sweep, replicates directionally, clears the 70–80% retention bar — but Sharpe impact is roughly neutral to mildly negative on 3 of 4 pairs. Marginal, not adopted.</div>
+
+<div class="footer-note">
+  Reflects all backtesting through the EQHL v2 research program (GBPUSD / EURUSD / GBPJPY / XAUUSD).<br>
+  BTCUSD research is a separate, newer effort — still in market-characterization phase, not yet a locked config.
+</div>
+
+</div>
+</body>
+</html>
