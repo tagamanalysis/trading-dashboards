@@ -146,6 +146,34 @@
 </style>
 </head>
 <body>
+<div id="pwGate" style="position:fixed;inset:0;background:#010409;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;">
+  <div style="background:#0d1117;border:1px solid #21262d;border-radius:12px;padding:32px;max-width:320px;width:90%;text-align:center;">
+    <h2 style="color:#c9d1d9;font-family:-apple-system,sans-serif;font-size:16px;margin:0 0 16px;">Enter password</h2>
+    <input type="password" id="pwInput" style="width:100%;padding:10px;border-radius:6px;border:1px solid #21262d;background:#161b22;color:#c9d1d9;font-size:14px;box-sizing:border-box;margin-bottom:12px;" onkeydown="if(event.key==='Enter')checkPw()">
+    <button onclick="checkPw()" style="width:100%;padding:10px;border-radius:6px;border:none;background:#238636;color:white;font-size:14px;cursor:pointer;">Unlock</button>
+    <p id="pwError" style="color:#f85149;font-size:12px;margin-top:10px;display:none;">Incorrect password</p>
+  </div>
+</div>
+<script>
+  var PW_HASH = "-1000853335";
+  function simpleHash(s) {
+    var h = 0;
+    for (var i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h |= 0; }
+    return h.toString();
+  }
+  if (sessionStorage.getItem("rulebookUnlocked") === "true") {
+    document.getElementById("pwGate").style.display = "none";
+  }
+  function checkPw() {
+    var val = document.getElementById("pwInput").value;
+    if (simpleHash(val) === PW_HASH) {
+      sessionStorage.setItem("rulebookUnlocked", "true");
+      document.getElementById("pwGate").style.display = "none";
+    } else {
+      document.getElementById("pwError").style.display = "block";
+    }
+  }
+</script>
 <div class="wrap">
 
 <a class="back" href="index.html">&larr; Back to dashboards</a>
