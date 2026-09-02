@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EQHL v2 — Pair Comparison</title>
+<style>
+  :root {
+    --bg: #010409;
+    --panel: #0d1117;
+    --border: #21262d;
+    --ink: #c9d1d9;
+    --ink-dim: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --red: #f85149;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 24px 16px 64px;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  a.back {
+    display: inline-block;
+    color: var(--ink-dim);
+    text-decoration: none;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  a.back:hover { color: var(--accent); }
+  h1 { font-size: 24px; margin: 0 0 4px; }
+  .subtitle { color: var(--ink-dim); font-size: 14px; margin-bottom: 28px; }
+  h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--ink-dim);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin: 40px 0 16px;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 620px; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; white-space: nowrap; }
+  th { background: #161b22; color: var(--ink-dim); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: .03em; }
+  tr:nth-child(even) td { background: #0a0d12; }
+  td.pair-name { font-weight: 700; color: var(--accent); }
+  td.pos { color: var(--green); }
+  td.neg { color: var(--red); }
+  .note { font-size: 12.5px; color: var(--ink-dim); margin-top: 10px; line-height: 1.5; }
+  .best-tag { background: rgba(63,185,80,0.15); color: var(--green); font-size: 10px; padding: 1px 6px; border-radius: 4px; margin-left: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">&larr; Back to dashboards</a>
+<h1>Pair Comparison</h1>
+<div class="subtitle">All 5 locked configs, side by side · 2021–2025</div>
+
+<h2>Performance Comparison (each on own $1,000 account, 1% risk/trade)</h2>
+<div class="panel">
+<table>
+<tr>
+  <th>Pair</th><th>Trades</th><th>Net P&L %</th><th>Net P&L $</th><th>Win Rate</th>
+  <th>Target RR</th><th>Max Win Streak</th><th>Max Loss Streak</th>
+</tr>
+<tr>
+  <td class="pair-name">GBPUSD</td><td>3,980</td><td class="pos">+4,636.0%</td><td class="pos">$46,359.75</td>
+  <td>55.80%</td><td>1.00</td><td>15</td><td>9</td>
+</tr>
+<tr>
+  <td class="pair-name">EURUSD</td><td>4,460</td><td class="pos">+744.5%</td><td class="pos">$7,445.03</td>
+  <td>53.52%</td><td>1.00</td><td>13</td><td>10</td>
+</tr>
+<tr>
+  <td class="pair-name">GBPJPY</td><td>4,671</td><td class="pos">+1,382.7%</td><td class="pos">$13,826.78</td>
+  <td>61.10%</td><td>0.75</td><td>15</td><td>8</td>
+</tr>
+<tr>
+  <td class="pair-name">XAUUSD</td><td>2,582</td><td class="pos">+528.9%</td><td class="pos">$5,289.01</td>
+  <td>62.43%</td><td>0.75</td><td>14</td><td>9</td>
+</tr>
+<tr>
+  <td class="pair-name">BTCUSD</td><td>5,275</td><td class="pos">+4,410.4%</td><td class="pos">$44,104.19</td>
+  <td>63.92%</td><td>0.75</td><td>21<span class="best-tag">longest</span></td><td>8<span class="best-tag">shortest</span></td>
+</tr>
+</table>
+<p class="note">Each row is that pair's own independent $1,000 account, compounding at 1% risk per trade, over its own full backtest history (2021–2025). Not pooled together — see the Portfolio dashboards for combined-account views.</p>
+</div>
+
+<h2>Trade Frequency &amp; Daily Coverage</h2>
+<div class="panel">
+<table>
+<tr><th>Pair</th><th>Trades / Day</th><th>% of Days Active</th></tr>
+<tr><td class="pair-name">BTCUSD</td><td>3.03<span class="best-tag">most active</span></td><td>79.7%</td></tr>
+<tr><td class="pair-name">GBPJPY</td><td>2.33</td><td>78.4%</td></tr>
+<tr><td class="pair-name">EURUSD</td><td>2.23</td><td>78.3%</td></tr>
+<tr><td class="pair-name">GBPUSD</td><td>2.18</td><td>78.1%</td></tr>
+<tr><td class="pair-name">XAUUSD</td><td>1.29</td><td>61.5%<span class="best-tag" style="background:rgba(248,81,73,0.15);color:var(--red)">quietest</span></td></tr>
+</table>
+<p class="note">On every single "quiet day" for any one pair, at least one of the other four had an active trade — 100% complementary coverage across all five, regardless of which pair is chosen. XAUUSD is the clear outlier on raw frequency (quiet nearly 40% of days), while BTCUSD is consistently the most active thanks to 24/7 trading.</p>
+</div>
+
+</div>
+</body>
+</html>
