@@ -1,0 +1,188 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EQHL v2 — Trading SOP</title>
+<style>
+  :root {
+    --bg: #010409;
+    --panel: #0d1117;
+    --border: #21262d;
+    --ink: #c9d1d9;
+    --ink-dim: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --red: #f85149;
+    --orange: #d29922;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 24px 16px 64px;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 24px; margin: 0 0 4px; }
+  .subtitle { color: var(--ink-dim); font-size: 14px; margin-bottom: 28px; }
+  h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--ink-dim);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin: 40px 0 16px;
+  }
+  .step {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .step .num {
+    display: inline-block;
+    background: var(--accent);
+    color: #000;
+    font-weight: 700;
+    font-size: 12px;
+    border-radius: 5px;
+    padding: 2px 7px;
+    margin-right: 8px;
+  }
+  .step-title { font-weight: 600; font-size: 15px; }
+  .step p { margin: 6px 0 0; color: var(--ink); font-size: 14px; }
+  code {
+    background: #161b22;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 13px;
+    color: #ffa657;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 4px;
+    font-size: 13px;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 7px 10px;
+    text-align: left;
+  }
+  th { background: #161b22; color: var(--ink-dim); font-weight: 600; }
+  tr:nth-child(even) td { background: #0a0d12; }
+  .highlight { color: var(--orange); font-weight: 600; }
+  .finding-box {
+    background: linear-gradient(135deg, rgba(88,166,255,0.08), rgba(88,166,255,0.02));
+    border: 1px solid #1f6feb44;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 16px 0;
+  }
+  .warn-box {
+    background: linear-gradient(135deg, rgba(248,81,73,0.08), rgba(248,81,73,0.02));
+    border: 1px solid #f8514944;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 16px 0;
+  }
+  ol, ul { font-size: 14px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  .footer-note {
+    color: var(--ink-dim);
+    font-size: 12px;
+    text-align: center;
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  a.back {
+    display: inline-block;
+    color: var(--ink-dim);
+    text-decoration: none;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  a.back:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">&larr; Back to dashboards</a>
+<h1>Trading SOP — Live Execution &amp; Risk Management</h1>
+<div class="subtitle">Companion to the Rulebook — this is HOW you trade, the Rulebook is WHAT you trade</div>
+
+<h2>1. Risk Per Trade</h2>
+<div class="finding-box">
+  <p style="font-size:15px; font-weight:600; margin-top:0;">Standard: <span class="highlight">0.5% of current account balance per trade</span></p>
+  <p style="font-size:13.5px;">Confirmed via backtest (Sept 2026): at 0.5% risk, every tested pair combination — solo and pooled — stayed safely within a real $12,000 max-loss limit on a $200,000 funded account (6% rule), with real margin (best case &minus;3.48% DD, worst case &minus;4.64% DD, all well under the 6% ceiling). At 1% risk, individual pairs alone would have breached the limit historically.</p>
+  <p class="note" style="font-size:13px; color:var(--ink-dim);"><b>Never deviate from 0.5% without re-running the loss-limit check first.</b> If account size or loss-limit % changes, the safe risk-per-trade number changes too.</p>
+</div>
+
+<h2>2. Target (RR) — Per Pair, No Exceptions By Default</h2>
+<table>
+  <tr><th>Pair</th><th>RR Target</th></tr>
+  <tr><td>GBPUSD</td><td>1.0</td></tr>
+  <tr><td>EURUSD</td><td>1.0</td></tr>
+  <tr><td>GBPJPY</td><td>0.75</td></tr>
+  <tr><td>XAUUSD</td><td>0.75</td></tr>
+  <tr><td>BTCUSD</td><td>0.75</td></tr>
+</table>
+<p style="font-size:14px;">These are not arbitrary — each was tested against the alternative (1.0 vs 0.75) and the value above won on both Sharpe and drawdown for that specific pair.</p>
+
+<div class="finding-box">
+  <p style="font-size:14px; margin-top:0;"><b>Discretionary exit management is allowed and is NOT a system violation.</b> Moving SL to breakeven, trailing based on live structure, or taking partial profit beyond the fixed target is a skill layer the backtest cannot model — it was never coded, so it was never tested.</p>
+  <p style="font-size:13.5px;">This means your discretionary exits have <b>no historical track record yet</b>. Log every discretionary exit separately (fixed-target R vs actual-exit R vs max structurally-available R) so a real track record builds over time, rather than assuming skill without evidence.</p>
+</div>
+
+<h2>3. Day-Type / Session / Other Filters — Check Before Every Entry</h2>
+<table>
+  <tr><th>Pair</th><th>Day-Type Rule</th><th>Session Rule</th><th>Other</th></tr>
+  <tr><td>GBPUSD</td><td>None</td><td>None</td><td>15-min news avoidance</td></tr>
+  <tr><td>EURUSD (Personal)</td><td>None</td><td>None</td><td>15-min news avoidance</td></tr>
+  <tr><td>EURUSD (Prop Firm)</td><td>Require Trend-Volatile</td><td>London+NY only</td><td>None</td></tr>
+  <tr><td>GBPJPY</td><td>None</td><td>None</td><td>None</td></tr>
+  <tr><td>XAUUSD</td><td class="highlight">EXCLUDE Trend-Volatile</td><td>None</td><td>None</td></tr>
+  <tr><td>BTCUSD</td><td>None</td><td>None</td><td class="highlight">EXCLUDE Saturday</td></tr>
+</table>
+<div class="warn-box">
+  <p style="font-size:14px; margin:0;">The on-chart Rules Table shows both the rule AND the live "Current Type" for each pair's active session. <b>If XAUUSD's Current Type shows Trend-Volatile, skip the trade</b> — even if the sweep/iFVG/CHoCH setup looks clean. This single filter roughly halved XAUUSD's drawdown in backtest (&minus;31.3% &rarr; &minus;18.2%).</p>
+</div>
+
+<h2>4. Entry Checklist</h2>
+<div class="step"><span class="step-title"><span class="num">1</span>Sweep detected</span><p>Correct pair/direction — EQH swept → short bias, EQL swept → long bias</p></div>
+<div class="step"><span class="step-title"><span class="num">2</span>iFVG has ARMED</span><p>Not just retraced — this is your real go-signal</p></div>
+<div class="step"><span class="step-title"><span class="num">3</span>CHoCH confirmed</span><p>On the close of the entry candle</p></div>
+<div class="step"><span class="step-title"><span class="num">4</span>Structure size within limit</span><p>GBPUSD/EURUSD &le;20p, GBPJPY &le;50p, XAUUSD &le;30p, BTCUSD &le;80bps</p></div>
+<div class="step"><span class="step-title"><span class="num">5</span>Check Current Type</span><p>Does this pair have an active day-type exclusion, and does today's session match it? If yes, skip.</p></div>
+<div class="step"><span class="step-title"><span class="num">6</span>Check day-of-week</span><p>Is this BTCUSD on a Saturday? Skip.</p></div>
+<div class="step"><span class="step-title"><span class="num">7</span>Position size</span><p>0.5% of current balance, calculated fresh — not copied from a prior trade</p></div>
+
+<h2>5. When Not To Trade</h2>
+<ul>
+  <li>Any pair during its excluded day-type (XAUUSD + Trend-Volatile) or excluded day (BTCUSD + Saturday)</li>
+  <li>Within 15 minutes of high-impact GBP/USD news (GBPUSD, EURUSD only)</li>
+  <li>If you notice yourself modifying a rule "just this once" — stop and write down WHY, don't silently deviate</li>
+</ul>
+
+<h2>6. Pair Priority By Session</h2>
+<p style="font-size:14px;">(Informational — not a hard rule.) London session is strongest for every forex/gold pair (GBPUSD, EURUSD, GBPJPY, XAUUSD). NY session is strongest for BTCUSD specifically — the one pair where this pattern reverses. Asian session is universally the weakest, though still positive on every pair. Your actual desk hours (3:30&ndash;9:30PM IST) already overlap heavily with London — no schedule change needed.</p>
+
+<h2>7. Rule Deviation Log</h2>
+<p style="font-size:14px;">Any time you trade outside the rules above (different RR, ignored a day-type exclusion, traded during excluded hours, etc.) — write it down immediately in the journal with the reason. This is not about guilt, it's about being able to later separate "the system underperformed" from "I deviated from the system." Undocumented deviations make it impossible to tell these apart after the fact.</p>
+
+<div class="footer-note">
+  Reflects the locked configs and risk math confirmed through the Sept 2026 EQHL v2 research program.<br>
+  If the underlying strategy or account constraints change, this document needs updating — it should never silently go stale while the Rulebook gets updated separately.
+</div>
+
+</div>
+</body>
+</html>
