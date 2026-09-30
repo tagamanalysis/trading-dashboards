@@ -1,0 +1,416 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Swing Trading Rulebook — S&amp;P 500 + NIFTY 500</title>
+<style>
+  :root {
+    --bg: #010409;
+    --panel: #0d1117;
+    --border: #21262d;
+    --ink: #c9d1d9;
+    --ink-dim: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --red: #f85149;
+    --orange: #d29922;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 24px 16px 64px;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  h1 {
+    font-size: 24px;
+    margin: 0 0 4px;
+  }
+  .subtitle { color: var(--ink-dim); font-size: 14px; margin-bottom: 28px; }
+  h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--ink-dim);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin: 40px 0 16px;
+  }
+  h3 {
+    font-size: 17px;
+    color: var(--accent);
+    margin: 22px 0 4px;
+  }
+  .step {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .step .num {
+    display: inline-block;
+    background: var(--accent);
+    color: #000;
+    font-weight: 700;
+    font-size: 12px;
+    border-radius: 5px;
+    padding: 2px 7px;
+    margin-right: 8px;
+  }
+  .step-title { font-weight: 600; font-size: 15px; }
+  .step p { margin: 6px 0 0; color: var(--ink); font-size: 14px; }
+  code {
+    background: #161b22;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 13px;
+    color: #ffa657;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 4px;
+    font-size: 13px;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 7px 10px;
+    text-align: left;
+  }
+  th { background: #161b22; color: var(--ink-dim); font-weight: 600; }
+  tr:nth-child(even) td { background: #0a0d12; }
+  .pair-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+  }
+  .pair-card h3 { margin-top: 0; }
+  .result-line {
+    background: #0a0d12;
+    border-left: 3px solid var(--green);
+    padding: 8px 12px;
+    margin: 10px 0;
+    font-size: 13px;
+    font-family: ui-monospace, monospace;
+    color: var(--ink);
+    border-radius: 4px;
+  }
+  .result-line.pending { border-left-color: var(--orange); }
+  .note {
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .finding-box {
+    background: linear-gradient(135deg, rgba(88,166,255,0.08), rgba(88,166,255,0.02));
+    border: 1px solid #1f6feb44;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 16px 0;
+  }
+  .rejected {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    font-size: 13.5px;
+  }
+  .rejected b { color: var(--red); }
+  .summary-table th:first-child, .summary-table td:first-child { font-weight: 600; color: var(--accent); }
+  .footer-note {
+    color: var(--ink-dim);
+    font-size: 12px;
+    text-align: center;
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  a.back {
+    display: inline-block;
+    color: var(--ink-dim);
+    text-decoration: none;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  a.back:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+<div id="pwGate" style="position:fixed;inset:0;background:#010409;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;">
+  <div style="background:#0d1117;border:1px solid #21262d;border-radius:12px;padding:32px;max-width:320px;width:90%;text-align:center;">
+    <h2 style="color:#c9d1d9;font-family:-apple-system,sans-serif;font-size:16px;margin:0 0 16px;">Enter password</h2>
+    <input type="password" id="pwInput" style="width:100%;padding:10px;border-radius:6px;border:1px solid #21262d;background:#161b22;color:#c9d1d9;font-size:14px;box-sizing:border-box;margin-bottom:12px;" onkeydown="if(event.key==='Enter')checkPw()">
+    <button onclick="checkPw()" style="width:100%;padding:10px;border-radius:6px;border:none;background:#238636;color:white;font-size:14px;cursor:pointer;">Unlock</button>
+    <p id="pwError" style="color:#f85149;font-size:12px;margin-top:10px;display:none;">Incorrect password</p>
+  </div>
+</div>
+<script>
+  // Same client-side gate mechanism as the EQHL rulebook -- cosmetic only,
+  // not real security. Default password is "swing2025" -- change PW_HASH by
+  // computing simpleHash("yourpassword") in the browser console and pasting
+  // the result here.
+  var PW_HASH = "-1000853335";
+  function simpleHash(s) {
+    var h = 0;
+    for (var i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h |= 0; }
+    return h.toString();
+  }
+  if (sessionStorage.getItem("swingRulebookUnlocked") === "true") {
+    document.getElementById("pwGate").style.display = "none";
+  }
+  function checkPw() {
+    var val = document.getElementById("pwInput").value;
+    if (simpleHash(val) === PW_HASH) {
+      sessionStorage.setItem("swingRulebookUnlocked", "true");
+      document.getElementById("pwGate").style.display = "none";
+    } else {
+      document.getElementById("pwError").style.display = "block";
+    }
+  }
+</script>
+<div class="wrap">
+
+<a class="back" href="final swing html dash/index.html">&larr; Back to dashboards</a>
+<h1>Swing Trading Rulebook — Complete Reference</h1>
+<div class="subtitle">6 locked, walk-forward-validated configurations · S&amp;P 500 + NIFTY 500 · point-in-time universe, 1% risk/trade (1R = 1%)</div>
+
+<h2>Selection Methodology (applies to every config below)</h2>
+<div class="step">
+  <span class="step-title"><span class="num">1</span>Full grid search, split by data slice</span>
+  <p>Each strategy's entry/exit parameter grid is swept independently per data slice (<code>sp500_matched</code>, <code>nifty500_all_time</code> — the two markets trimmed to the same ~13-year matched span so neither market's longer history skews the comparison). Every (entry, exit) combo is scored on <b>train-era trades only</b>.</p>
+</div>
+<div class="step">
+  <span class="step-title"><span class="num">2</span>Winner selection</span>
+  <p>The combo with the highest <code>drawdown_aware_score</code> on train-era trades (minimum 30 train trades to qualify) is taken as the winner for that slice. Its train AND validation stats are both reported — validation trades were never seen by the selection process.</p>
+</div>
+<div class="step">
+  <span class="step-title"><span class="num">3</span>Point-in-time universe correction</span>
+  <p>Every trade is checked against the actual index membership on its entry date (<code>is_in_universe_on_date</code>) — a stock that later joined or left the S&amp;P 500 / NIFTY 500 can't generate a trade on a date it wasn't actually a constituent. Removes look-ahead/survivorship bias baked into a static current-day universe.</p>
+</div>
+<div class="step">
+  <span class="step-title"><span class="num">4</span>Final 6 kept</span>
+  <p>Of 26 strategies tested, 4 were strong on <b>both</b> markets (RS-Leader, IBS, Fibonacci Pullback, Darvas Box) and kept for both slices. The best remaining 5th slot differs by market — Turtle/Donchian for NIFTY, Oversold Bounce for S&amp;P — so both are kept, each restricted to the market it actually earned its place on. Every other strategy in the library was excluded for weaker/less consistent validation performance.</p>
+</div>
+
+<h2>Strategy Mechanisms</h2>
+
+<h3>1. RS-Leader (cross-sectional relative-strength breakout)</h3>
+<div class="step"><span class="step-title"><span class="num">1</span>Universe-wide RS ranking</span><p>Each ticker's trailing <code>rs_lookback_months</code>-month return is computed and turned into a percentile rank against every other ticker in the same universe on the same day (a threshold panel built once per slice).</p></div>
+<div class="step"><span class="step-title"><span class="num">2</span>Leadership filter</span><p>Entry requires the ticker's own RS percentile to be at or above the universe's 80th-percentile threshold that day — it must actually be one of the market's current leaders, not just going up.</p></div>
+<div class="step"><span class="step-title"><span class="num">3</span>Proximity + breakout trigger</span><p>Close must be within <code>near_high_pct</code>% of its own 52-week high, AND price must break above the prior <code>base_lookback_weeks</code>-week high on volume ≥ <code>breakout_volume_mult</code>&times; average.</p></div>
+<div class="step"><span class="step-title"><span class="num">4</span>Exit</span><p>Hard stop at <code>stop_max_pct</code>% below entry, OR exit whenever the ticker's own RS percentile falls below <code>rs_exit_percentile</code> (leadership fading) — whichever comes first. No fixed price target; winners are allowed to run as long as relative strength holds.</p></div>
+
+<h3>2. IBS (Internal Bar Strength mean reversion)</h3>
+<div class="step"><span class="step-title"><span class="num">1</span>IBS calculation</span><p><code>IBS = (Close − Low) / (High − Low)</code> — where in the day's range the close landed. Near 0 = closed near the low.</p></div>
+<div class="step"><span class="step-title"><span class="num">2</span>Entry filters</span><p>Optional trend filter (close above 200-day EMA) and volume filter (volume above its 20-day average) narrow entries to pullbacks within an uptrend rather than every washed-out bar.</p></div>
+<div class="step"><span class="step-title"><span class="num">3</span>Entry trigger</span><p><code>IBS &lt; entry_ibs_threshold</code> — a weak close relative to the day's own range.</p></div>
+<div class="step"><span class="step-title"><span class="num">4</span>Exit</span><p>First bar where <code>IBS &gt; exit_ibs_threshold</code> (a strong close signals the reversion has played out), or a 60-bar time-stop. No placed stop-loss — risk is measured against a nominal 1&times;ATR(14)-at-entry unit rather than an actual stop order.</p></div>
+
+<h3>3. Fibonacci Pullback (trend-continuation retracement)</h3>
+<div class="step"><span class="step-title"><span class="num">1</span>Impulse leg identification</span><p>A rolling-window swing high/low over the trailing <code>impulse_lookback_weeks</code> weeks approximates the most recent up-leg (documented proxy, not a true peak-finder).</p></div>
+<div class="step"><span class="step-title"><span class="num">2</span>Trend filter</span><p>Close must be above the <code>trend_ma_days</code>-day SMA.</p></div>
+<div class="step"><span class="step-title"><span class="num">3</span>Entry trigger</span><p>Price retraces into the <code>fib_ratio</code> level of that leg (within &plusmn;<code>fib_tolerance_pct</code>%) and resumes.</p></div>
+<div class="step"><span class="step-title"><span class="num">4</span>Exit</span><p>Stop at the swing low minus a buffer, OR a fixed measured-move target (<code>target_mult_of_leg</code> &times; leg height) — whichever hits first. The fixed target caps upside, which is why avg win size runs lower than trend-riding strategies despite a healthy win rate.</p></div>
+
+<h3>4. Darvas Box (breakout from consolidation)</h3>
+<div class="step"><span class="step-title"><span class="num">1</span>Box detection</span><p>A rolling <code>box_lookback_weeks</code>-week high/low range approximates a Darvas consolidation box, capped at <code>max_box_height_pct</code>% to exclude ranges too wide to be a real base.</p></div>
+<div class="step"><span class="step-title"><span class="num">2</span>Proximity filter</span><p>The box must sit within <code>near_52w_high_pct</code>% of the stock's 52-week high — breakouts from bases near new highs, not mid-range chop.</p></div>
+<div class="step"><span class="step-title"><span class="num">3</span>Entry trigger</span><p>Close breaks above the box top on volume ≥ <code>breakout_volume_mult</code>&times; average.</p></div>
+<div class="step"><span class="step-title"><span class="num">4</span>Exit</span><p>Stop at the box bottom minus a buffer, OR a fixed measured-move target (<code>target_mult_of_box_height</code> &times; box height) — whichever hits first. Same target-capping trade-off as Fibonacci Pullback.</p></div>
+
+<h3>5. Oversold Bounce (RSI mean reversion, uptrend only)</h3>
+<div class="step"><span class="step-title"><span class="num">1</span>Trend filter</span><p>Close must be above the <code>trend_ma_length</code>-day SMA — bounces are only taken with the larger trend, not against it.</p></div>
+<div class="step"><span class="step-title"><span class="num">2</span>Entry trigger</span><p>Wilder RSI(<code>oscillator_period</code>) must actually <b>cross up</b> out of oversold — <code>RSI[t-1] &le; oversold_threshold</code> AND <code>RSI[t] &gt; oversold_threshold</code>. Being oversold alone is not sufficient; the bounce has to already be underway.</p></div>
+<div class="step"><span class="step-title"><span class="num">3</span>Support confluence (optional)</span><p>When enabled, also requires close to be within 3% of the rolling 20-day low — a documented proxy for "at support," since the source material only specified this as a binary toggle without a concrete definition.</p></div>
+<div class="step"><span class="step-title"><span class="num">4</span>Exit</span><p>RSI crossing back above <code>exit_overbought_threshold</code>, or a 60-bar time-stop. Same nominal 1&times;ATR(14) risk-unit convention as IBS — no placed stop.</p></div>
+
+<h3>6. Turtle/Donchian (classic trend-following breakout)</h3>
+<div class="step"><span class="step-title"><span class="num">1</span>Entry trigger</span><p>Close breaks above the prior <code>entry_channel_length</code>-bar Donchian channel high.</p></div>
+<div class="step"><span class="step-title"><span class="num">2</span>Exit — whichever comes first</span><p>(a) an ATR-based stop fixed at entry (<code>entry_price &minus; atr_stop_mult &times; ATR(atr_lookback)</code>), or (b) close falling below the trailing <code>exit_channel_length</code>-bar low.</p></div>
+<div class="step"><span class="step-title"><span class="num">3</span>Classic System-1 filter</span><p><code>skip_if_last_winner</code> — skip the next signal on a ticker if its previous trade was a winner (the original Turtle System 1 rule). <b>Confirmed to have zero effect on the winning combo</b> — True and False produce byte-identical train/val stats for these parameters, so it isn't doing any actual filtering here.</p></div>
+<div class="step"><span class="step-title"><span class="num">4</span>Time cap</span><p>250-bar maximum hold as a safety cap. R is measured against the actual ATR-based stop distance at entry (a real placed stop, unlike IBS/Oversold Bounce).</p></div>
+
+<h2>Per-Config Locked Parameters</h2>
+
+<div class="pair-card">
+  <h3>1. RS-Leader — NIFTY 500</h3>
+  <table>
+    <tr><th>RS lookback</th><td>9 months</td></tr>
+    <tr><th>Near-52wk-high</th><td>5%</td></tr>
+    <tr><th>Base lookback</th><td>4 weeks</td></tr>
+    <tr><th>Breakout volume</th><td>2.0&times; avg</td></tr>
+    <tr><th>Stop</th><td>5% max</td></tr>
+    <tr><th>RS exit percentile</th><td>50th</td></tr>
+  </table>
+  <div class="result-line">train n=1743 &middot; val n=961 &middot; val WR=28.6% &middot; val PF=4.193 &middot; val exp=+2.203R &middot; val total=+2117R &middot; val maxDD=&minus;115.96R &middot; overfit gap=+0.068</div>
+  <p class="note">Low win rate, huge PF — classic trend-follower shape: most trades are small losses cut at the 5% stop, a few leadership runs do the heavy lifting. Gap near zero, holds up well out of sample.</p>
+</div>
+
+<div class="pair-card">
+  <h3>2. RS-Leader — S&amp;P 500 (matched)</h3>
+  <table>
+    <tr><th>RS lookback</th><td>9 months</td></tr>
+    <tr><th>Near-52wk-high</th><td>12%</td></tr>
+    <tr><th>Base lookback</th><td>4 weeks</td></tr>
+    <tr><th>Breakout volume</th><td>1.3&times; avg</td></tr>
+    <tr><th>Stop</th><td>5% max</td></tr>
+    <tr><th>RS exit percentile</th><td>60th</td></tr>
+  </table>
+  <div class="result-line">train n=1822 &middot; val n=1009 &middot; val WR=30.8% &middot; val PF=3.182 &middot; val exp=+1.418R &middot; val total=+1431R &middot; val maxDD=&minus;91.95R &middot; overfit gap=&minus;0.758</div>
+  <p class="note">Negative overfit gap means it actually did <b>better</b> out of sample than in training — a good sign, not a red flag. Looser proximity/volume filters than the NIFTY config, tuned separately per market as expected for a cross-sectional strategy.</p>
+</div>
+
+<div class="pair-card">
+  <h3>3. IBS — NIFTY 500</h3>
+  <table>
+    <tr><th>Entry IBS &lt;</th><td>0.10</td></tr>
+    <tr><th>Trend filter</th><td>On (close &gt; EMA200)</td></tr>
+    <tr><th>Volume filter</th><td>Off</td></tr>
+    <tr><th>Exit IBS &gt;</th><td>0.85</td></tr>
+  </table>
+  <div class="result-line">train n=14480 &middot; val n=9235 &middot; val WR=61.6% &middot; val PF=1.465 &middot; val exp=+0.272R &middot; val total=+2511R &middot; val maxDD=&minus;605.25R &middot; overfit gap=+0.145</div>
+  <p class="note">By far the highest trade count of any config here — small per-trade edge, but sample size does the compounding. Deepest cumulative drawdown of the six, consistent with a mean-reversion strategy with no placed stop.</p>
+</div>
+
+<div class="pair-card">
+  <h3>4. IBS — S&amp;P 500 (matched)</h3>
+  <table>
+    <tr><th>Entry IBS &lt;</th><td>0.05</td></tr>
+    <tr><th>Trend filter</th><td>On (close &gt; EMA200)</td></tr>
+    <tr><th>Volume filter</th><td>On</td></tr>
+    <tr><th>Exit IBS &gt;</th><td>0.95</td></tr>
+  </table>
+  <div class="result-line">train n=10318 &middot; val n=4385 &middot; val WR=64.0% &middot; val PF=1.604 &middot; val exp=+0.490R &middot; val total=+2148R &middot; val maxDD=&minus;320.58R &middot; overfit gap=+0.053</div>
+  <p class="note">Tighter thresholds and both filters on (vs NIFTY's volume filter off) — a stricter, higher-quality-per-trade version that trades less often but with better PF and expectancy.</p>
+</div>
+
+<div class="pair-card">
+  <h3>5. Fibonacci Pullback — NIFTY 500</h3>
+  <table>
+    <tr><th>Impulse lookback</th><td>8 weeks</td></tr>
+    <tr><th>Trend MA</th><td>150 days</td></tr>
+    <tr><th>Fib ratio</th><td>0.618</td></tr>
+    <tr><th>Fib tolerance</th><td>&plusmn;1.0%</td></tr>
+    <tr><th>Stop buffer</th><td>1.0%</td></tr>
+    <tr><th>Target</th><td>1.5&times; leg height</td></tr>
+  </table>
+  <div class="result-line">train n=4727 &middot; val n=2396 &middot; val WR=39.4% &middot; val PF=1.961 &middot; val exp=+0.546R &middot; val total=+1308R &middot; val maxDD=&minus;173.84R &middot; overfit gap=+0.161</div>
+  <p class="note">Deeper retracement level (61.8%) than the S&amp;P config. Fixed target caps individual winners, so win rate matters more here than in the trend-followers.</p>
+</div>
+
+<div class="pair-card">
+  <h3>6. Fibonacci Pullback — S&amp;P 500 (matched)</h3>
+  <table>
+    <tr><th>Impulse lookback</th><td>12 weeks</td></tr>
+    <tr><th>Trend MA</th><td>150 days</td></tr>
+    <tr><th>Fib ratio</th><td>0.382</td></tr>
+    <tr><th>Fib tolerance</th><td>&plusmn;1.0%</td></tr>
+    <tr><th>Stop buffer</th><td>1.0%</td></tr>
+    <tr><th>Target</th><td>1.5&times; leg height</td></tr>
+  </table>
+  <div class="result-line">train n=4208 &middot; val n=2080 &middot; val WR=50.4% &middot; val PF=1.964 &middot; val exp=+0.406R &middot; val total=+844R &middot; val maxDD=&minus;63.02R &middot; overfit gap=+0.033</div>
+  <p class="note">Shallower retracement (38.2%) and much higher win rate than the NIFTY config, at similar PF. Lowest drawdown of any of the four core cross-market strategies.</p>
+</div>
+
+<div class="pair-card">
+  <h3>7. Darvas Box — NIFTY 500</h3>
+  <table>
+    <tr><th>Box lookback</th><td>3 weeks</td></tr>
+    <tr><th>Near-52wk-high</th><td>5%</td></tr>
+    <tr><th>Max box height</th><td>15%</td></tr>
+    <tr><th>Breakout volume</th><td>1.5&times; avg</td></tr>
+    <tr><th>Stop buffer</th><td>1.0%</td></tr>
+    <tr><th>Target</th><td>2.0&times; box height</td></tr>
+  </table>
+  <div class="result-line">train n=2877 &middot; val n=1731 &middot; val WR=59.1% &middot; val PF=2.162 &middot; val exp=+0.442R &middot; val total=+766R &middot; val maxDD=&minus;78.10R &middot; overfit gap=&minus;0.098</div>
+  <p class="note">Tighter box (3 weeks) and proximity filter (5%) than the S&amp;P config, larger target multiple. Negative overfit gap — held up better in validation than training.</p>
+</div>
+
+<div class="pair-card">
+  <h3>8. Darvas Box — S&amp;P 500 (matched)</h3>
+  <table>
+    <tr><th>Box lookback</th><td>4 weeks</td></tr>
+    <tr><th>Near-52wk-high</th><td>15%</td></tr>
+    <tr><th>Max box height</th><td>15%</td></tr>
+    <tr><th>Breakout volume</th><td>1.3&times; avg</td></tr>
+    <tr><th>Stop buffer</th><td>1.0%</td></tr>
+    <tr><th>Target</th><td>1.5&times; box height</td></tr>
+  </table>
+  <div class="result-line">train n=4477 &middot; val n=2279 &middot; val WR=57.8% &middot; val PF=1.555 &middot; val exp=+0.220R &middot; val total=+502R &middot; val maxDD=&minus;82.86R &middot; overfit gap=&minus;0.017</div>
+  <p class="note">Weakest of the two Darvas configs on both PF and expectancy, but still consistent (small negative gap) — kept as the market-specific config rather than forcing the NIFTY parameters onto S&amp;P.</p>
+</div>
+
+<div class="pair-card">
+  <h3>9. Oversold Bounce — S&amp;P 500 (matched only — SP500-specific pick)</h3>
+  <table>
+    <tr><th>RSI period</th><td>19</td></tr>
+    <tr><th>Oversold threshold</th><td>35</td></tr>
+    <tr><th>Trend MA</th><td>250 days</td></tr>
+    <tr><th>Support confluence</th><td>On</td></tr>
+    <tr><th>Exit overbought</th><td>72.5</td></tr>
+  </table>
+  <div class="result-line">train n=779 &middot; val n=422 &middot; val WR=63.3% &middot; val PF=2.536 &middot; val exp=+1.895R &middot; val total=+800R &middot; val maxDD=&minus;94.72R &middot; overfit gap=&minus;0.594</div>
+  <p class="note">Not tested/kept for NIFTY — this is the S&amp;P-specific 5th slot, chosen over Turtle/Donchian because it's the stronger, more consistent performer on this particular market. Smallest sample of the six configs; negative gap means validation outperformed training.</p>
+</div>
+
+<div class="pair-card">
+  <h3>10. Turtle/Donchian — NIFTY 500 (all-time only — NIFTY-specific pick)</h3>
+  <table>
+    <tr><th>Entry channel</th><td>35 bars</td></tr>
+    <tr><th>Exit channel</th><td>30 bars</td></tr>
+    <tr><th>ATR stop mult</th><td>3.5&times;</td></tr>
+    <tr><th>ATR lookback</th><td>10 bars</td></tr>
+    <tr><th>Skip-if-last-winner</th><td>True (confirmed no effect at this combo)</td></tr>
+  </table>
+  <div class="result-line">train n=6927 &middot; val n=3113 &middot; val WR=41.1% &middot; val PF=2.666 &middot; val exp=+0.760R &middot; val total=+2367R &middot; val maxDD=&minus;194.42R &middot; overfit gap=&minus;0.101</div>
+  <p class="note pending">Not tested/kept for S&amp;P — this is the NIFTY-specific 5th slot. These are the sweep's own authoritative val-era numbers, double-checked against the raw grid dump. Per-trade granular stats (avg winning/losing R, max losing streak) are <b>pending a clean re-capture</b> — a prior trade-level export for this config was found to be stale/mismatched and is being regenerated; this card will be updated once confirmed.</p>
+</div>
+
+<h2>Summary Table</h2>
+<table class="summary-table">
+  <tr><th>Strategy</th><th>Market</th><th>Val n</th><th>Val WR</th><th>Val PF</th><th>Val Exp</th><th>Val Total</th><th>Val MaxDD</th><th>Gap</th></tr>
+  <tr><td>RS-Leader</td><td>NIFTY 500</td><td>961</td><td>28.6%</td><td>4.193</td><td>+2.203R</td><td>+2117R</td><td>&minus;115.96R</td><td>+0.068</td></tr>
+  <tr><td>RS-Leader</td><td>S&amp;P 500</td><td>1009</td><td>30.8%</td><td>3.182</td><td>+1.418R</td><td>+1431R</td><td>&minus;91.95R</td><td>&minus;0.758</td></tr>
+  <tr><td>IBS</td><td>NIFTY 500</td><td>9235</td><td>61.6%</td><td>1.465</td><td>+0.272R</td><td>+2511R</td><td>&minus;605.25R</td><td>+0.145</td></tr>
+  <tr><td>IBS</td><td>S&amp;P 500</td><td>4385</td><td>64.0%</td><td>1.604</td><td>+0.490R</td><td>+2148R</td><td>&minus;320.58R</td><td>+0.053</td></tr>
+  <tr><td>Fibonacci Pullback</td><td>NIFTY 500</td><td>2396</td><td>39.4%</td><td>1.961</td><td>+0.546R</td><td>+1308R</td><td>&minus;173.84R</td><td>+0.161</td></tr>
+  <tr><td>Fibonacci Pullback</td><td>S&amp;P 500</td><td>2080</td><td>50.4%</td><td>1.964</td><td>+0.406R</td><td>+844R</td><td>&minus;63.02R</td><td>+0.033</td></tr>
+  <tr><td>Darvas Box</td><td>NIFTY 500</td><td>1731</td><td>59.1%</td><td>2.162</td><td>+0.442R</td><td>+766R</td><td>&minus;78.10R</td><td>&minus;0.098</td></tr>
+  <tr><td>Darvas Box</td><td>S&amp;P 500</td><td>2279</td><td>57.8%</td><td>1.555</td><td>+0.220R</td><td>+502R</td><td>&minus;82.86R</td><td>&minus;0.017</td></tr>
+  <tr><td>Oversold Bounce</td><td>S&amp;P 500 only</td><td>422</td><td>63.3%</td><td>2.536</td><td>+1.895R</td><td>+800R</td><td>&minus;94.72R</td><td>&minus;0.594</td></tr>
+  <tr><td>Turtle/Donchian</td><td>NIFTY 500 only</td><td>3113</td><td>41.1%</td><td>2.666</td><td>+0.760R</td><td>+2367R</td><td>&minus;194.42R</td><td>&minus;0.101</td></tr>
+</table>
+
+<div class="finding-box">
+  <h3 style="margin-top:0">Key Cross-Strategy Finding</h3>
+  <p style="font-size:14px;"><b>Win rate and expectancy trade off in opposite directions between the trend-followers and the mean-reverters.</b> RS-Leader and Turtle/Donchian post the lowest win rates (28–41%) but the highest PF and per-trade expectancy — they cut losers early and let a minority of trades do the compounding. IBS and Oversold Bounce invert this: 60%+ win rates but thinner per-trade edges, relying on trade count (IBS especially, with 9,000+ validation trades on NIFTY alone) to compound. Fibonacci Pullback and Darvas Box sit in between — both cap upside with a fixed measured-move target, which is why neither posts the standout expectancy of the two trend-followers despite solid win rates.</p>
+</div>
+
+<h2>Excluded From the Final 6 — Why</h2>
+<p class="note" style="margin-bottom:14px;">Kept here so the reasoning isn't lost if these come up again.</p>
+
+<div class="rejected"><b>21 other strategies from the 26-strategy library</b> — tested with the same walk-forward methodology (train/val split, PIT universe correction, drawdown-aware selection) but did not clear the bar for both consistency and out-of-sample performance that the final 6 did. Full results remain in the master comparison doc.</div>
+<div class="rejected"><b>Turtle/Donchian on S&amp;P 500</b> — did not outperform Oversold Bounce on that market; kept as the NIFTY-only 5th slot instead of forcing it onto both markets.</div>
+<div class="rejected"><b>Oversold Bounce on NIFTY 500</b> — not the strongest 5th-slot candidate for that market; Turtle/Donchian took that slot instead.</div>
+<div class="rejected"><b>sp500_all_time slice for cross-market comparison</b> — S&amp;P's full history is far longer than NIFTY's, so using it alongside nifty500_all_time would skew any side-by-side read; sp500_matched (trimmed to NIFTY's span) is used instead wherever both markets are compared.</div>
+<div class="rejected"><b>Turtle/Donchian's <code>skip_if_last_winner</code> filter</b> — the classic Turtle System 1 rule. Tested True vs False at the winning parameter combo: byte-identical train and validation stats either way. Not doing any actual filtering at this combo; kept in the config for fidelity to the source rule, but it isn't contributing to the edge.</div>
+
+<div class="footer-note">
+  Reflects all walk-forward backtesting across the 26-strategy swing library, S&amp;P 500 + NIFTY 500, point-in-time corrected.<br>
+  6 configs locked above. Turtle/Donchian's per-trade streak/win-loss-R stats pending final re-verification (see orange note).
+</div>
+
+</div>
+</body>
+</html>
